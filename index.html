@@ -1,0 +1,296 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>Меню — блюда на заказ</title>
+  <style>
+    :root {
+      --cream: #f5f0e5;
+      --green: #213c2d;
+      --muted: #687269;
+      --line: #d7d8cc;
+    }
+
+    * { box-sizing: border-box; }
+
+    html { background: var(--cream); }
+
+    body {
+      margin: 0;
+      min-width: 0;
+      overflow-x: hidden;
+      background: var(--cream);
+      color: var(--green);
+      font-family: Arial, Helvetica, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .menu {
+      width: min(100%, 760px);
+      margin: 0 auto;
+      padding: 34px 22px 48px;
+    }
+
+    header {
+      margin-bottom: 28px;
+      text-align: center;
+    }
+
+    h1 {
+      margin: 0;
+      font: 400 clamp(2.45rem, 11vw, 3.6rem)/1 Georgia, "Times New Roman", serif;
+      letter-spacing: -0.035em;
+    }
+
+    .subtitle {
+      max-width: 42rem;
+      margin: 10px auto 0;
+      color: var(--muted);
+      font-size: 0.92rem;
+      line-height: 1.45;
+    }
+
+    .section-picker {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 18px;
+      padding: 22px 0 24px;
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--muted);
+      font-size: 0.78rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    select, input[type="search"] {
+      display: block;
+      width: 100%;
+      min-height: 48px;
+      border: 1px solid #bcc4ba;
+      border-radius: 0;
+      background: #fbf8f1;
+      color: var(--green);
+      padding: 10px 40px 10px 12px;
+      font: 400 1rem/1.3 Arial, Helvetica, sans-serif;
+    }
+
+    select:focus, input[type="search"]:focus, .clear-search:focus-visible {
+      outline: 2px solid var(--green);
+      outline-offset: 2px;
+    }
+
+    .picker-field { min-width: 0; }
+    .search-field { position: relative; }
+    input[type="search"] { padding-right: 48px; appearance: none; }
+    input[type="search"]::placeholder { color: var(--muted); opacity: 1; }
+    input[type="search"]::-webkit-search-cancel-button { display: none; }
+    .clear-search {
+      position: absolute;
+      top: 2px;
+      right: 2px;
+      width: 44px;
+      height: 44px;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      color: var(--green);
+      font: 400 1.6rem/1 Arial, Helvetica, sans-serif;
+      cursor: pointer;
+    }
+    .search-hint, .search-status, .empty-state {
+      margin: 8px 0 0;
+      color: var(--muted);
+      font-size: 0.8rem;
+      line-height: 1.45;
+    }
+    .dish-category {
+      margin: 0 0 8px;
+      color: var(--muted);
+      font-size: 0.76rem;
+    }
+    .empty-state { padding: 20px 0; font-size: 0.94rem; }
+    [hidden] { display: none !important; }
+
+    @media (max-width: 520px) {
+      .section-picker { grid-template-columns: minmax(0, 1fr); }
+    }
+
+    .section-title {
+      margin: 28px 0 6px;
+      font: 400 clamp(1.8rem, 8vw, 2.5rem)/1.1 Georgia, "Times New Roman", serif;
+    }
+
+    .dish {
+      min-width: 0;
+      padding: 18px 0 19px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .dish-heading {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: start;
+      gap: 16px;
+    }
+
+    .dish-name {
+      min-width: 0;
+      margin: 0;
+      overflow-wrap: anywhere;
+      font: 400 1.12rem/1.35 Georgia, "Times New Roman", serif;
+    }
+
+    .dish-price {
+      padding-top: 2px;
+      white-space: nowrap;
+      font-size: 0.94rem;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .dish-description {
+      margin: 7px 0 0;
+      color: var(--muted);
+      font-size: 0.88rem;
+      line-height: 1.5;
+    }
+
+    .dish-portion {
+      margin: 8px 0 0;
+      color: var(--muted);
+      font-size: 0.8rem;
+      line-height: 1.4;
+    }
+
+    @media (max-width: 360px) {
+      .menu { padding-right: 16px; padding-left: 16px; }
+      .dish-heading { gap: 10px; }
+      .dish-name { font-size: 1.04rem; }
+    }
+  </style>
+</head>
+<body>
+  <main class="menu">
+    <header>
+      <h1>Меню</h1>
+      <p class="subtitle">Заказы принимаются предварительно за 2–3 дня. Доставка по городу — 350 руб., за пределами города — 500 руб. Телефон: 8 (914) 860-50-40. Татьяна.</p>
+    </header>
+
+    <div class="section-picker">
+      <div class="picker-field">
+        <label for="section-select">Раздел</label>
+        <select id="section-select" aria-controls="dish-list"></select>
+      </div>
+      <div class="picker-field">
+        <label for="dish-search">Поиск блюда</label>
+        <div class="search-field">
+          <input id="dish-search" type="search" placeholder="Название или ингредиент"
+            autocomplete="off" aria-controls="dish-list" aria-describedby="search-hint">
+          <button id="clear-search" class="clear-search" type="button" aria-label="Очистить поиск" hidden>×</button>
+        </div>
+        <p id="search-hint" class="search-hint">Поиск по всем разделам меню</p>
+      </div>
+    </div>
+
+    <section aria-labelledby="section-title">
+      <h2 class="section-title" id="section-title"></h2>
+      <p id="search-status" class="search-status" role="status" aria-live="polite" aria-atomic="true"></p>
+      <p id="empty-state" class="empty-state" hidden>Ничего не найдено. Попробуйте другое название или ингредиент.</p>
+      <div id="dish-list"></div>
+    </section>
+  </main>
+
+  <script type="application/json" id="menu-data">[{"title":"Завтраки","items":[{"name":"Каша из пяти злаков","description":"","portion":"250 г","price":250,"source":"Каша из пяти злаков — 0,25 кг / 250 ₽"},{"name":"Каша овсяная","description":"","portion":"250 г","price":250,"source":"Каша овсяная — 0,25 кг / 250 ₽"},{"name":"Каша пшеничная","description":"","portion":"300 г","price":300,"source":"Каша пшеничная — 0,3 кг / 300 ₽"},{"name":"Каша рисовая","description":"","portion":"300 г","price":300,"source":"Каша рисовая — 0,3 кг / 300 ₽"},{"name":"Каша гречневая","description":"","portion":"300 г","price":300,"source":"Каша гречневая — 0,3 кг / 300 ₽"},{"name":"Сытный завтрак","description":"лепёшка, яйца, помидор, ветчина, зелень","portion":"350 г","price":350,"source":"Сытный завтрак: лепёшка, яйца, помидор, ветчина, зелень — 0,350 кг / 350 ₽"}]},{"title":"Обеды — первые блюда","items":[{"name":"Борщ со свининой","description":"","portion":"500 мл","price":600,"source":"Борщ со свининой — 0,5 л / 600 ₽"},{"name":"Борщ с курицей","description":"","portion":"500 мл","price":600,"source":"Борщ с курицей — 0,5 л / 600 ₽"},{"name":"Окрошка","description":"","portion":"500 мл","price":650,"source":"Окрошка — 0,5 л / 650 ₽"},{"name":"Рассольник со свининой","description":"","portion":"500 мл","price":600,"source":"Рассольник со свининой — 0,5 л / 600 ₽"},{"name":"Рассольник с курицей","description":"","portion":"500 мл","price":600,"source":"Рассольник с курицей — 0,5 л / 600 ₽"},{"name":"Суп гороховый со свининой","description":"","portion":"500 мл","price":600,"source":"Суп гороховый со свининой — 0,5 л / 600 ₽"},{"name":"Суп куриный","description":"","portion":"500 мл","price":550,"source":"Суп куриный — 0,5 л / 550 ₽"},{"name":"Суп куриный с галушками","description":"","portion":"500 мл","price":550,"source":"Суп куриный с галушками — 0,5 л / 550 ₽"},{"name":"Сырный суп с грибами","description":"","portion":"500 мл","price":600,"source":"Сырный суп с грибами — 0,5 л / 600 ₽"},{"name":"Сырный суп с колбасками","description":"","portion":"500 мл","price":600,"source":"Сырный суп с колбасками — 0,5 л / 600 ₽"},{"name":"Солянка","description":"","portion":"500 мл","price":650,"source":"Солянка — 0,5 л / 650 ₽"},{"name":"Суп с фрикадельками","description":"","portion":"500 мл","price":550,"source":"Суп с фрикадельками — 0,5 л / 550 ₽"},{"name":"Суп сайровый","description":"","portion":"500 мл","price":450,"source":"Суп сайровый — 0,5 л / 450 ₽"},{"name":"Шурпа из говядины","description":"","portion":"500 мл","price":750,"source":"Шурпа из говядины — 0,5 л / 750 ₽"}]},{"title":"Обеды — вторые блюда","items":[{"name":"Азу","description":"","portion":"500 г","price":900,"source":"Азу — 0,5 кг / 900 ₽"},{"name":"Бедро куриное","description":"","portion":"500 г","price":750,"source":"Бедро куриное — 0,5 кг / 750 ₽"},{"name":"Голень куриная","description":"","portion":"500 г","price":750,"source":"Голень куриная — 0,5 кг / 750 ₽"},{"name":"Грудка запечённая с сыром","description":"","portion":"500 г","price":750,"source":"Грудка запечённая с сыром — 0,5 кг / 750 ₽"},{"name":"Нежная, сочная грудка с начинкой из шампиньонов, помидоров черри, зелени и сыра","description":"","portion":"500 г","price":800,"source":"Нежная, сочная грудка с начинкой из шампиньонов, помидоров черри, зелени и сыра — 0,5 кг / 800 ₽"},{"name":"Гуляш из свинины","description":"","portion":"500 г","price":800,"source":"Гуляш из свинины — 0,5 кг / 800 ₽"},{"name":"Жареное мясо с овощами","description":"","portion":"500 г","price":800,"source":"Жареное мясо с овощами — 0,5 кг / 800 ₽"},{"name":"Жаркое с ветчиной","description":"","portion":"500 г","price":800,"source":"Жаркое с ветчиной — 0,5 кг / 800 ₽"},{"name":"Жаркое со свининой","description":"","portion":"500 г","price":850,"source":"Жаркое со свининой — 0,5 кг / 850 ₽"},{"name":"Жюльен","description":"","portion":"500 г","price":800,"source":"Жюльен — 0,5 кг / 800 ₽"},{"name":"Курица-гриль","description":"","portion":"1 шт.","price":750,"source":"Курица-гриль — 1 шт. / 750 ₽"},{"name":"Картофель жареный со свининой","description":"","portion":"500 г","price":800,"source":"Картофель жареный со свининой — 0,5 кг / 800 ₽"},{"name":"Котлета свиная","description":"","portion":"500 г","price":850,"source":"Котлета свиная — 0,5 кг / 850 ₽"},{"name":"Котлета куриная","description":"","portion":"500 г","price":800,"source":"Котлета куриная — 0,5 кг / 800 ₽"},{"name":"Котлета куриная рубленая","description":"","portion":"500 г","price":800,"source":"Котлета куриная рубленая — 0,5 кг / 800 ₽"},{"name":"Котлета куриная с сыром","description":"","portion":"500 г","price":800,"source":"Котлета куриная с сыром — 0,5 кг / 800 ₽"},{"name":"Котлеты жареные с подливой","description":"","portion":"500 г","price":800,"source":"Котлеты жареные с подливой — 0,5 кг / 800 ₽"},{"name":"Котлета «Жюльен»","description":"фарш куриный, шампиньоны, жареный лук, сливки, помидоры","portion":"500 г","price":850,"source":"Котлета «Жюльен» (фарш куриный, шампиньоны, жареный лук, сливки, помидоры) — 0,5 кг / 850 ₽"},{"name":"Крылышки в маринаде","description":"","portion":"500 г","price":800,"source":"Крылышки в маринаде — 0,5 кг / 800 ₽"},{"name":"Крылышки в кисло-сладком соусе","description":"","portion":"500 г","price":850,"source":"Крылышки в кисло-сладком соусе — 0,5 кг / 850 ₽"},{"name":"Конвертик с мясом","description":"свинина, помидоры, шампиньоны, лаваш","portion":"500 г","price":850,"source":"Конвертик с мясом (свинина, помидоры, шампиньоны, лаваш) — 0,5 кг / 850 ₽"},{"name":"Ленивые голубцы","description":"","portion":"500 г","price":750,"source":"Ленивые голубцы — 0,5 кг / 750 ₽"},{"name":"Мясо по-французски","description":"","portion":"500 г","price":850,"source":"Мясо по-французски — 0,5 кг / 850 ₽"},{"name":"Мякоть бедра, картофель, зелень, сливки, яйца, специи","description":"","portion":"500 г","price":700,"source":"Мякоть бедра, картофель, зелень, сливки, яйца, специи — 0,5 кг / 700 ₽"},{"name":"Отбивная куриная","description":"","portion":"500 г","price":800,"source":"Отбивная куриная — 0,5 кг / 800 ₽"},{"name":"Отбивная куриная","description":"маринованный лук, шампиньоны, черри, сыр моцарелла","portion":"500 г","price":850,"source":"Отбивная куриная (маринованный лук, шампиньоны, черри, сыр моцарелла) — 0,5 кг / 850 ₽"},{"name":"Отбивная свиная","description":"","portion":"500 г","price":900,"source":"Отбивная свиная — 0,5 кг / 900 ₽"},{"name":"Перец, фаршированный курицей","description":"","portion":"500 г","price":800,"source":"Перец, фаршированный курицей — 0,5 кг / 800 ₽"},{"name":"Перец, фаршированный свининой","description":"","portion":"500 г","price":850,"source":"Перец, фаршированный свининой — 0,5 кг / 850 ₽"},{"name":"Плов со свининой","description":"","portion":"500 г","price":850,"source":"Плов со свининой — 0,5 кг / 850 ₽"},{"name":"Плов с курицей","description":"","portion":"500 г","price":800,"source":"Плов с курицей — 0,5 кг / 800 ₽"},{"name":"Плов с куриными крыльями","description":"","portion":"500 г","price":750,"source":"Плов с куриными крыльями — 0,5 кг / 750 ₽"},{"name":"Рагу мясное","description":"","portion":"500 г","price":800,"source":"Рагу мясное — 0,5 кг / 800 ₽"},{"name":"Рёбрышки в маринаде","description":"","portion":"500 г","price":800,"source":"Рёбрышки в маринаде — 0,5 кг / 800 ₽"},{"name":"Солянка со свининой","description":"","portion":"500 г","price":750,"source":"Солянка со свининой — 0,5 кг / 750 ₽"},{"name":"Солянка с охотничьими колбасками","description":"","portion":"500 г","price":700,"source":"Солянка с охотничьими колбасками — 0,5 кг / 700 ₽"},{"name":"Спагетти карбонара","description":"","portion":"500 г","price":450,"source":"Спагетти карбонара — 0,5 кг / 450 ₽"},{"name":"Тефтели свиные","description":"","portion":"500 г","price":850,"source":"Тефтели свиные — 0,5 кг / 850 ₽"},{"name":"Тефтели «Ёжики»","description":"курица, свинина, рис","portion":"500 г","price":800,"source":"Тефтели «Ёжики» (курица, свинина, рис) — 0,5 кг / 800 ₽"},{"name":"Тефтели куриные","description":"","portion":"500 г","price":800,"source":"Тефтели куриные — 0,5 кг / 800 ₽"},{"name":"Торт печёночный","description":"","portion":"500 г","price":750,"source":"Торт печёночный — 0,5 кг / 750 ₽"},{"name":"Тыква с начинкой","description":"","portion":"500 г","price":650,"source":"Тыква с начинкой — 0,5 кг / 650 ₽"},{"name":"Холодец","description":"курица, рулька","portion":"500 г","price":900,"source":"Холодец (курица, рулька) — 0,5 кг / 900 ₽"},{"name":"Шашлык из свинины","description":"","portion":"500 г","price":950,"source":"Шашлык из свинины — 0,5 кг / 950 ₽"},{"name":"Шницель из свинины","description":"","portion":"500 г","price":900,"source":"Шницель из свинины — 0,5 кг / 900 ₽"}]},{"title":"Рыба","items":[{"name":"Биточки из минтая в панировочных сухарях","description":"","portion":"500 г","price":800,"source":"Биточки из минтая в панировочных сухарях — 0,5 кг / 800 ₽"},{"name":"Горбуша запечённая","description":"","portion":"500 г","price":800,"source":"Горбуша запечённая — 0,5 кг / 800 ₽"},{"name":"Горбуша с картофелем в духовке","description":"","portion":"500 г","price":850,"source":"Горбуша с картофелем в духовке — 0,5 кг / 850 ₽"},{"name":"Горбуша жареная","description":"","portion":"500 г","price":800,"source":"Горбуша жареная — 0,5 кг / 800 ₽"},{"name":"Корюшка жареная","description":"","portion":"500 г","price":950,"source":"Корюшка жареная — 0,5 кг / 950 ₽"},{"name":"Кета жареная","description":"","portion":"500 г","price":850,"source":"Кета жареная — 0,5 кг / 850 ₽"},{"name":"Кета жареная в кляре со сметанным соусом","description":"","portion":"500 г","price":850,"source":"Кета жареная в кляре со сметанным соусом — 0,5 кг / 850 ₽"},{"name":"Кижуч жареный","description":"","portion":"500 г","price":950,"source":"Кижуч жареный — 0,5 кг / 950 ₽"},{"name":"Кижуч в кляре","description":"","portion":"500 г","price":950,"source":"Кижуч в кляре — 0,5 кг / 950 ₽"},{"name":"Кальмар с овощами","description":"","portion":"500 г","price":750,"source":"Кальмар с овощами — 0,5 кг / 750 ₽"},{"name":"Котлеты из кеты","description":"","portion":"500 г","price":850,"source":"Котлеты из кеты — 0,5 кг / 850 ₽"},{"name":"Минтай в кляре","description":"","portion":"500 г","price":850,"source":"Минтай в кляре — 0,5 кг / 850 ₽"},{"name":"Молоки жареные","description":"","portion":"500 г","price":700,"source":"Молоки жареные — 0,5 кг / 700 ₽"},{"name":"Шницель из кижуча в панировочных сухарях","description":"","portion":"500 г","price":950,"source":"Шницель из кижуча в панировочных сухарях — 0,5 кг / 950 ₽"}]},{"title":"Гарниры","items":[{"name":"Гречка отварная","description":"","portion":"500 г","price":370,"source":"Гречка отварная — 0,5 кг / 370 ₽"},{"name":"Картофельное пюре","description":"","portion":"500 г","price":480,"source":"Картофельное пюре — 0,5 кг / 480 ₽"},{"name":"Картофельное пюре с брокколи","description":"","portion":"500 г","price":480,"source":"Картофельное пюре с брокколи — 0,5 кг / 480 ₽"},{"name":"Картофель жареный","description":"","portion":"500 г","price":650,"source":"Картофель жареный — 0,5 кг / 650 ₽"},{"name":"Картофель по-деревенски","description":"","portion":"500 г","price":550,"source":"Картофель по-деревенски — 0,5 кг / 550 ₽"},{"name":"Картофель отварной","description":"","portion":"500 г","price":350,"source":"Картофель отварной — 0,5 кг / 350 ₽"},{"name":"Капуста жареная","description":"","portion":"500 г","price":400,"source":"Капуста жареная — 0,5 кг / 400 ₽"},{"name":"Рис отварной","description":"","portion":"500 г","price":370,"source":"Рис отварной — 0,5 кг / 370 ₽"},{"name":"Макароны","description":"","portion":"500 г","price":360,"source":"Макароны — 0,5 кг / 360 ₽"}]},{"title":"Пироги","items":[{"name":"Ветчина, сыр, зелень","description":"","portion":"1000 г","price":1100,"source":"Ветчина, сыр, зелень — 1 кг / 1100 ₽"},{"name":"Жюльен","description":"курица, грибы, сыр, сливки","portion":"1000 г","price":1150,"source":"Жюльен: курица, грибы, сыр, сливки — 1 кг / 1150 ₽"},{"name":"Индейка, картофель, зелень","description":"","portion":"1000 г","price":1100,"source":"Индейка, картофель, зелень — 1 кг / 1100 ₽"},{"name":"Индейка, овощи","description":"","portion":"1000 г","price":1100,"source":"Индейка, овощи — 1 кг / 1100 ₽"},{"name":"Капуста, овощи, зелень","description":"","portion":"1000 г","price":950,"source":"Капуста, овощи, зелень — 1 кг / 950 ₽"},{"name":"Картофель, грибы, зелень","description":"","portion":"1000 г","price":950,"source":"Картофель, грибы, зелень — 1 кг / 950 ₽"},{"name":"Круассан с ветчиной и сыром","description":"","portion":"1 шт.","price":300,"source":"Круассан с ветчиной и сыром — 1 шт. / 300 ₽"},{"name":"Кулебяка","description":"слоёное тесто, курица, сыр","portion":"900 г","price":850,"source":"Кулебяка (слоёное тесто, курица, сыр) — 0,9 кг / 850 ₽"},{"name":"Кулебяка","description":"слоёное тесто, рис с яйцом, зелёный лук","portion":"900 г","price":800,"source":"Кулебяка (слоёное тесто, рис с яйцом, зелёный лук) — 0,9 кг / 800 ₽"},{"name":"Кулебяка","description":"слоёное тесто, рыба, зелень, жареный лук","portion":"900 г","price":900,"source":"Кулебяка (слоёное тесто, рыба, зелень, жареный лук) — 0,9 кг / 900 ₽"},{"name":"Курица, грибы, сыр, зелень","description":"","portion":"1000 г","price":1100,"source":"Курица, грибы, сыр, зелень — 1 кг / 1100 ₽"},{"name":"Курица, капуста, зелень","description":"","portion":"1000 г","price":1100,"source":"Курица, капуста, зелень — 1 кг / 1100 ₽"},{"name":"Курица, картофель, зелень","description":"","portion":"1000 г","price":1100,"source":"Курица, картофель, зелень — 1 кг / 1100 ₽"},{"name":"Рис, яйцо, зелёный лук","description":"","portion":"1000 г","price":950,"source":"Рис, яйцо, зелёный лук — 1 кг / 950 ₽"},{"name":"Свинина, картофель, зелень","description":"","portion":"1000 г","price":1100,"source":"Свинина, картофель, зелень — 1 кг / 1100 ₽"},{"name":"Сердце, яйцо, жареный лук","description":"","portion":"1000 г","price":1100,"source":"Сердце, яйцо, жареный лук — 1 кг / 1100 ₽"}]},{"title":"Рыбные начинки","items":[{"name":"Кета, картофель, зелень","description":"","portion":"1000 г","price":1650,"source":"Кета, картофель, зелень — 1 кг / 1650 ₽"},{"name":"Палтус","description":"","portion":"1000 г","price":2950,"source":"Палтус — 1 кг / 2950 ₽"},{"name":"Палтус, кета","description":"","portion":"1000 г","price":2300,"source":"Палтус, кета — 1 кг / 2300 ₽"}]},{"title":"Сладкие начинки","items":[{"name":"Чернослив, орехи","description":"","portion":"1000 г","price":1050,"source":"Чернослив, орехи — 1 кг / 1050 ₽"},{"name":"Вишня","description":"","portion":"1000 г","price":1150,"source":"Вишня — 1 кг / 1150 ₽"},{"name":"Клубника","description":"","portion":"1000 г","price":1150,"source":"Клубника — 1 кг / 1150 ₽"},{"name":"Брусника","description":"","portion":"1000 г","price":1150,"source":"Брусника — 1 кг / 1150 ₽"},{"name":"Сладкий пирог с оформлением из свежих фруктов","description":"","portion":"1000 г","price":2050,"source":"Сладкий пирог с оформлением из свежих фруктов — 1 кг / 2050 ₽"}]},{"title":"Осетинские пироги","items":[{"name":"Ветчина, сыр, зелень","description":"","portion":"800 г","price":950,"source":"Ветчина, сыр, зелень — 0,8 кг / 950 ₽"},{"name":"Картофель, сыр, зелень","description":"","portion":"800 г","price":850,"source":"Картофель, сыр, зелень — 0,8 кг / 850 ₽"},{"name":"Капуста, зелень","description":"","portion":"800 г","price":800,"source":"Капуста, зелень — 0,8 кг / 800 ₽"},{"name":"Капуста, грибы, зелень","description":"","portion":"800 г","price":850,"source":"Капуста, грибы, зелень — 0,8 кг / 850 ₽"},{"name":"Курица, зелень","description":"","portion":"800 г","price":900,"source":"Курица, зелень — 0,8 кг / 900 ₽"},{"name":"Кета с жареным луком","description":"","portion":"800 г","price":850,"source":"Кета с жареным луком — 0,8 кг / 850 ₽"},{"name":"Свинина, зелень","description":"","portion":"800 г","price":900,"source":"Свинина, зелень — 0,8 кг / 900 ₽"},{"name":"Творог, зелень","description":"","portion":"800 г","price":850,"source":"Творог, зелень — 0,8 кг / 850 ₽"},{"name":"Грудка куриная, жареный лук, сыр","description":"","portion":"800 г","price":900,"source":"Грудка куриная, жареный лук, сыр — 0,8 кг / 900 ₽"},{"name":"Яйцо, лук","description":"","portion":"800 г","price":850,"source":"Яйцо, лук — 0,8 кг / 850 ₽"}]},{"title":"Осетинские сладкие","items":[{"name":"Вишня","description":"","portion":"800 г","price":850,"source":"Вишня — 0,8 кг / 850 ₽"},{"name":"Тыква","description":"","portion":"800 г","price":700,"source":"Тыква — 0,8 кг / 700 ₽"}]},{"title":"Выпечка из дрожжевого теста","items":[{"name":"Пирожки печёные","description":"","portion":"1 шт.","price":90,"source":"Пирожки печёные — 1 шт. / 90 ₽"},{"name":"Пирожки жареные","description":"","portion":"1 шт.","price":95,"source":"Пирожки жареные — 1 шт. / 95 ₽"},{"name":"Пирожки жареные сладкие","description":"","portion":"1 шт.","price":100,"source":"Пирожки жареные сладкие — 1 шт. / 100 ₽"},{"name":"Пицца 40 на 40","description":"","portion":"1 шт.","price":800,"source":"Пицца 40 на 40 — 1 шт. / 800 ₽"},{"name":"Мини-пицца","description":"","portion":"200 г","price":150,"source":"Мини-пицца — 0,2 кг / 150 ₽"},{"name":"Расстегай с рыбой","description":"","portion":"220 г","price":300,"source":"Расстегай с рыбой — 0,220 кг / 300 ₽"},{"name":"Расстегай с курицей","description":"","portion":"220 г","price":250,"source":"Расстегай с курицей — 0,220 кг / 250 ₽"},{"name":"Расстегай со свининой","description":"","portion":"220 г","price":250,"source":"Расстегай со свининой — 0,220 кг / 250 ₽"},{"name":"Сосиска в тесте","description":"","portion":"1 шт.","price":100,"source":"Сосиска в тесте — 1 шт. / 100 ₽"},{"name":"Слойка с мясом","description":"свинина","portion":"1 шт.","price":100,"source":"Слойка с мясом (свинина) — 1 шт. / 100 ₽"},{"name":"Слойка с мясом","description":"курица","portion":"1 шт.","price":100,"source":"Слойка с мясом (курица) — 1 шт. / 100 ₽"},{"name":"Свадебный каравай","description":"","portion":"1000 г","price":1850,"source":"Свадебный каравай — 1 кг / 1850 ₽"},{"name":"Хачапури по-аджарски","description":"","portion":"1 шт.","price":700,"source":"Хачапури по-аджарски — 1 шт. / 700 ₽"},{"name":"Хачапури с сыром","description":"адыгейским и моцареллой","portion":"800 г","price":800,"source":"Хачапури с сыром (адыгейским и моцареллой) — 0,8 кг / 800 ₽"}]},{"title":"Блины","items":[{"name":"Без начинки","description":"","portion":"1 шт.","price":75,"source":"Без начинки — 1 шт. / 75 ₽"},{"name":"Жареная капуста, зелень","description":"","portion":"1 шт.","price":95,"source":"Жареная капуста, зелень — 1 шт. / 95 ₽"},{"name":"Курица","description":"","portion":"1 шт.","price":95,"source":"Курица — 1 шт. / 95 ₽"},{"name":"Крабовые палочки","description":"","portion":"1 шт.","price":95,"source":"Крабовые палочки — 1 шт. / 95 ₽"},{"name":"Курица, морковь по-корейски","description":"","portion":"1 шт.","price":95,"source":"Курица, морковь по-корейски — 1 шт. / 95 ₽"},{"name":"Картофель, зелень","description":"","portion":"1 шт.","price":95,"source":"Картофель, зелень — 1 шт. / 95 ₽"},{"name":"Свинина","description":"","portion":"1 шт.","price":95,"source":"Свинина — 1 шт. / 95 ₽"},{"name":"Яйцо, рис, лук зелёный","description":"","portion":"1 шт.","price":95,"source":"Яйцо, рис, лук зелёный — 1 шт. / 95 ₽"},{"name":"Яйцо, лук, зелень","description":"","portion":"1 шт.","price":95,"source":"Яйцо, лук, зелень — 1 шт. / 95 ₽"}]},{"title":"Сладкие блины","items":[{"name":"Варёная сгущёнка","description":"","portion":"1 шт.","price":95,"source":"Варёная сгущёнка — 1 шт. / 95 ₽"},{"name":"Вишня","description":"","portion":"1 шт.","price":100,"source":"Вишня — 1 шт. / 100 ₽"},{"name":"Творог, изюм","description":"","portion":"1 шт.","price":100,"source":"Творог, изюм — 1 шт. / 100 ₽"},{"name":"Творог","description":"","portion":"1 шт.","price":100,"source":"Творог — 1 шт. / 100 ₽"}]},{"title":"Салаты","items":[{"name":"«Аппетитный»","description":"","portion":"сыр, ветчина, яйцо, майонез — 0,5 кг","price":750,"source":"«Аппетитный» — сыр, ветчина, яйцо, майонез — 0,5 кг / 750 ₽"},{"name":"Винегрет","description":"","portion":"500 г","price":800,"source":"Винегрет — 0,5 кг / 800 ₽"},{"name":"Говяжье сердце, болгарский перец, свежий огурец, кунжутное масло","description":"","portion":"500 г","price":900,"source":"Говяжье сердце, болгарский перец, свежий огурец, кунжутное масло — 0,5 кг / 900 ₽"},{"name":"Кабачки, болгарский перец, зелень, оливковое масло","description":"","portion":"500 г","price":650,"source":"Кабачки, болгарский перец, зелень, оливковое масло — 0,5 кг / 650 ₽"},{"name":"Кабачки запечённые, помидоры черри, листья салата, оливковое масло","description":"","portion":"500 г","price":750,"source":"Кабачки запечённые, помидоры черри, листья салата, оливковое масло — 0,5 кг / 750 ₽"},{"name":"Кабачки, помидоры, сметана, майонез","description":"","portion":"500 г","price":700,"source":"Кабачки, помидоры, сметана, майонез — 0,5 кг / 700 ₽"},{"name":"Кабачковые оладьи","description":"","portion":"500 г","price":600,"source":"Кабачковые оладьи — 0,5 кг / 600 ₽"},{"name":"Кальмар, морковь, кукуруза, майонез","description":"","portion":"500 г","price":800,"source":"Кальмар, морковь, кукуруза, майонез — 0,5 кг / 800 ₽"},{"name":"Кальмар, огурец, яйцо, майонез","description":"","portion":"500 г","price":850,"source":"Кальмар, огурец, яйцо, майонез — 0,5 кг / 850 ₽"},{"name":"Кальмар, шампиньоны, твёрдый сыр, яйцо, репчатый лук, майонез","description":"","portion":"500 г","price":850,"source":"Кальмар, шампиньоны, твёрдый сыр, яйцо, репчатый лук, майонез — 0,5 кг / 850 ₽"},{"name":"Крабовые палочки, свежий огурец, кукуруза, яйцо, зелень","description":"","portion":"500 г","price":800,"source":"Крабовые палочки, свежий огурец, кукуруза, яйцо, зелень — 0,5 кг / 800 ₽"},{"name":"«Любимый»","description":"","portion":"кальмар, красный лук, болгарский перец, лимонный сок, майонез — 0,5 кг","price":850,"source":"«Любимый» — кальмар, красный лук, болгарский перец, лимонный сок, майонез — 0,5 кг / 850 ₽"},{"name":"«Микс»","description":"","portion":"брокколи, цветная капуста, репчатый лук, болгарский перец, картофель, специи, соевый соус — 0,5 кг","price":750,"source":"«Микс» — брокколи, цветная капуста, репчатый лук, болгарский перец, картофель, специи, соевый соус — 0,5 кг / 750 ₽"},{"name":"Морковь, чеснок, майонез","description":"","portion":"500 г","price":650,"source":"Морковь, чеснок, майонез — 0,5 кг / 650 ₽"},{"name":"«Обжорка»","description":"","portion":"свинина, маринованные огурцы, горошек, шампиньоны, майонез, морковь, лук, перец — 0,5 кг","price":900,"source":"«Обжорка» — свинина, маринованные огурцы, горошек, шампиньоны, майонез, морковь, лук, перец — 0,5 кг / 900 ₽"},{"name":"Оливье","description":"","portion":"500 г","price":850,"source":"Оливье — 0,5 кг / 850 ₽"},{"name":"Свежие помидоры, зелёные оливки, масло","description":"","portion":"500 г","price":650,"source":"Свежие помидоры, зелёные оливки, масло — 0,5 кг / 650 ₽"},{"name":"Свёкла, грецкий орех, чеснок, майонез","description":"","portion":"500 г","price":650,"source":"Свёкла, грецкий орех, чеснок, майонез — 0,5 кг / 650 ₽"},{"name":"Свёкла, солёный огурчик, жареный лук, оливковое масло","description":"","portion":"500 г","price":600,"source":"Свёкла, солёный огурчик, жареный лук, оливковое масло — 0,5 кг / 600 ₽"},{"name":"Сельдь под шубой","description":"","portion":"500 г","price":850,"source":"Сельдь под шубой — 0,5 кг / 850 ₽"},{"name":"Сельдь с горошком, лук","description":"","portion":"500 г","price":800,"source":"Сельдь с горошком, лук — 0,5 кг / 800 ₽"},{"name":"Стрелки чеснока","description":"","portion":"свинина, морковь, репчатый лук, соевый соус — 0,5 кг","price":850,"source":"Стрелки чеснока — свинина, морковь, репчатый лук, соевый соус — 0,5 кг / 850 ₽"},{"name":"«Хряпа»","description":"","portion":"капуста, свёкла, морковь — 0,5 кг","price":500,"source":"«Хряпа» — капуста, свёкла, морковь — 0,5 кг / 500 ₽"}]},{"title":"Другие овощи","items":[{"name":"Брокколи в кляре","description":"","portion":"500 г","price":500,"source":"Брокколи в кляре — 0,5 кг / 500 ₽"},{"name":"Жареные овощи","description":"","portion":"500 г","price":600,"source":"Жареные овощи — 0,5 кг / 600 ₽"},{"name":"Кабачки в кляре","description":"","portion":"500 г","price":550,"source":"Кабачки в кляре — 0,5 кг / 550 ₽"},{"name":"Кабачки запечённые с сыром","description":"","portion":"500 г","price":650,"source":"Кабачки запечённые с сыром — 0,5 кг / 650 ₽"},{"name":"Цветная капуста в кляре","description":"","portion":"500 г","price":500,"source":"Цветная капуста в кляре — 0,5 кг / 500 ₽"},{"name":"Рататуй","description":"овощное ассорти (кабачки, баклажаны, свежие помидоры, чесночный соус)","portion":"500 г","price":700,"source":"Рататуй: овощное ассорти (кабачки, баклажаны, свежие помидоры, чесночный соус) — 0,5 кг / 700 ₽"},{"name":"Аджика домашняя","description":"болгарский перец, острый перец, помидоры","portion":"225 г","price":190,"source":"Аджика домашняя (болгарский перец, острый перец, помидоры) — 0,225 кг / 190 ₽"}]},{"title":"Закуски","items":[{"name":"Рулетики из лаваша","description":"крабовые палочки, яйцо варёное, зелень, соус","portion":"10 шт.","price":1600,"source":"Рулетики из лаваша: крабовые палочки, яйцо варёное, зелень, соус — 10 шт. / 1600 ₽"},{"name":"Рулетики из лаваша","description":"сыр, шампиньоны, лук, зелень, соус","portion":"10 шт.","price":1600,"source":"Рулетики из лаваша: сыр, шампиньоны, лук, зелень, соус — 10 шт. / 1600 ₽"},{"name":"Рулетики из лаваша","description":"красная рыба, огурец, зелень, творожный сыр","portion":"10 шт.","price":1900,"source":"Рулетики из лаваша: красная рыба, огурец, зелень, творожный сыр — 10 шт. / 1900 ₽"},{"name":"Рулетики из лаваша","description":"куриная грудка, яйцо варёное, зелень, соус","portion":"10 шт.","price":1600,"source":"Рулетики из лаваша: куриная грудка, яйцо варёное, зелень, соус — 10 шт. / 1600 ₽"},{"name":"Рулетики из лаваша","description":"ветчина, сыр, зелень, соус","portion":"10 шт.","price":1650,"source":"Рулетики из лаваша: ветчина, сыр, зелень, соус — 10 шт. / 1650 ₽"},{"name":"Рулетики из лаваша","description":"палтус, огурец, зелень, творожный сыр","portion":"10 шт.","price":2300,"source":"Рулетики из лаваша: палтус, огурец, зелень, творожный сыр — 10 шт. / 2300 ₽"},{"name":"Рулетики из кабачков","description":"сливочный сыр, зелень, грецкий орех","portion":"500 г","price":750,"source":"Рулетики из кабачков: сливочный сыр, зелень, грецкий орех — 0,5 кг / 750 ₽"},{"name":"Рулетики из кабачков","description":"сливочный сыр, зелень, свежий помидор","portion":"500 г","price":750,"source":"Рулетики из кабачков: сливочный сыр, зелень, свежий помидор — 0,5 кг / 750 ₽"},{"name":"Рулетики из лепёшки","description":"сливочный сыр, шпроты, яйца, зелень, майонез","portion":"1 шт.","price":90,"source":"Рулетики из лепёшки: сливочный сыр, шпроты, яйца, зелень, майонез — 1 шт. / 90 ₽"},{"name":"Рулетики мясные в беконе","description":"фарш куриный","portion":"500 г","price":750,"source":"Рулетики мясные в беконе: фарш куриный — 0,5 кг / 750 ₽"},{"name":"Канапе","description":"твёрдый сыр, грецкий орех, виноград и др.","portion":"1 шт.","price":200,"source":"Канапе: твёрдый сыр, грецкий орех, виноград и др. — 1 шт. / 200 ₽"},{"name":"Тарталетки из песочного теста","description":"начинка по договорённости","portion":"1 шт.","price":300,"source":"Тарталетки из песочного теста: начинка по договорённости — 1 шт. / 300 ₽"}]}]</script>
+  <script>
+    (() => {
+      const sections = JSON.parse(document.getElementById('menu-data').textContent);
+      const select = document.getElementById('section-select');
+      const title = document.getElementById('section-title');
+      const list = document.getElementById('dish-list');
+      const search = document.getElementById('dish-search');
+      const clear = document.getElementById('clear-search');
+      const status = document.getElementById('search-status');
+      const empty = document.getElementById('empty-state');
+      const formatPrice = value => new Intl.NumberFormat('ru-RU').format(value) + ' ₽';
+      const normalize = value => value.toLocaleLowerCase('ru-RU').replace(/ё/g, 'е').trim();
+      const allDishes = sections.flatMap(section => section.items.map(item => ({
+        item,
+        section: section.title,
+        searchable: normalize([item.name, item.description, item.portion].join(' '))
+      })));
+
+      function renderDish(item, sectionName) {
+        const article = document.createElement('article');
+        article.className = 'dish';
+        if (sectionName) {
+          const category = document.createElement('p');
+          category.className = 'dish-category';
+          category.textContent = sectionName;
+          article.append(category);
+        }
+        const heading = document.createElement('div');
+        heading.className = 'dish-heading';
+        const name = document.createElement('h3');
+        name.className = 'dish-name';
+        name.textContent = item.name;
+        const price = document.createElement('span');
+        price.className = 'dish-price';
+        price.textContent = formatPrice(item.price);
+        heading.append(name, price);
+        article.append(heading);
+        if (item.description) {
+          const description = document.createElement('p');
+          description.className = 'dish-description';
+          description.textContent = item.description;
+          article.append(description);
+        }
+        const portion = document.createElement('p');
+        portion.className = 'dish-portion';
+        portion.textContent = item.portion;
+        article.append(portion);
+        return article;
+      }
+
+      function render() {
+        const query = normalize(search.value);
+        clear.hidden = search.value.length === 0;
+        if (query) {
+          const words = query.split(/\s+/);
+          const matches = allDishes.filter(dish => words.every(word => dish.searchable.includes(word)));
+          title.textContent = 'Результаты поиска';
+          status.textContent = 'Найдено блюд: ' + matches.length;
+          empty.hidden = matches.length > 0;
+          list.replaceChildren(...matches.map(dish => renderDish(dish.item, dish.section)));
+        } else {
+          const section = sections[Number(select.value)];
+          title.textContent = section.title;
+          status.textContent = '';
+          empty.hidden = true;
+          list.replaceChildren(...section.items.map(item => renderDish(item)));
+        }
+      }
+
+      sections.forEach((section, index) => {
+        const option = document.createElement('option');
+        option.value = String(index);
+        option.textContent = section.title;
+        select.append(option);
+      });
+      search.addEventListener('input', render);
+      select.addEventListener('change', () => { search.value = ''; render(); });
+      clear.addEventListener('click', () => { search.value = ''; render(); search.focus(); });
+      search.addEventListener('keydown', event => {
+        if (event.key === 'Escape') { search.value = ''; render(); }
+      });
+      render();
+    })();
+  </script>
+</body>
+</html>
